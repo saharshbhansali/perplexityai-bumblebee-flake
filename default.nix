@@ -12,7 +12,7 @@ buildGoModule rec {
     owner = "perplexityai";
     repo = "bumblebee";
     rev = "v${version}";
-    sha256 = lib.fakeSha256;
+    sha256 = "sha256-gmB+j1rmnOqHjV2N4hqH2QDolAZ3Za7ztioskZ/FkOQ=";
   };
 
   # vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
