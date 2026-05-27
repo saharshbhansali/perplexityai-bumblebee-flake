@@ -1,0 +1,8 @@
+# Nix build files
+build/
+result/
+result
+
+# Log files
+*.log
+
