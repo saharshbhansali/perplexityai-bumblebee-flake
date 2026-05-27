@@ -1,15 +1,57 @@
 {
-  description = "A very basic flake";
+  description = "PerplexityAI Bumblebee";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
   };
 
-  outputs = { self, nixpkgs }: {
+  outputs =
+    { self, nixpkgs }:
+    let
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
 
-    packages.x86_64-linux.hello = nixpkgs.legacyPackages.x86_64-linux.hello;
+      forAllSystems =
+        f:
+        nixpkgs.lib.genAttrs systems (
+          system:
+          f {
+            pkgs = import nixpkgs {
+              inherit system;
+            };
+          }
+        );
+    in
+    {
+      packages = forAllSystems (
+        { pkgs }:
+        {
+          default = pkgs.callPackage ./default.nix { };
+        }
+      );
 
-    packages.x86_64-linux.default = self.packages.x86_64-linux.hello;
+      apps = forAllSystems (
+        { pkgs }:
+        {
+          default = {
+            type = "app";
+            program = "${self.packages.${pkgs.system}.default}/bin/bumblebee";
+          };
+        }
+      );
 
-  };
+      devShells = forAllSystems (
+        { pkgs }:
+        {
+          default = pkgs.mkShell {
+            packages = with pkgs; [
+              go
+              gopls
+            ];
+          };
+        }
+      );
+    };
 }
