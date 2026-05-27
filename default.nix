@@ -21,6 +21,16 @@ buildGoModule rec {
     "-X main.Version=v${version}"
   ];
 
+  doInstallCheck = true;
+
+  installCheckPhase = ''
+    runHook preInstallCheck
+
+    $out/bin/bumblebee selftest
+
+    runHook postInstallCheck
+  '';
+
   # vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
   vendorHash = null;
 
